@@ -9,10 +9,15 @@ import org.springframework.context.annotation.Profile;
 
 import br.com.irdbr.springbootionic.domain.Categoria;
 import br.com.irdbr.springbootionic.domain.Cidade;
+import br.com.irdbr.springbootionic.domain.Cliente;
+import br.com.irdbr.springbootionic.domain.Endereco;
 import br.com.irdbr.springbootionic.domain.Estado;
 import br.com.irdbr.springbootionic.domain.Produto;
+import br.com.irdbr.springbootionic.domain.enums.TipoCliente;
 import br.com.irdbr.springbootionic.repositories.CategoriaRepository;
 import br.com.irdbr.springbootionic.repositories.CidadeRepository;
+import br.com.irdbr.springbootionic.repositories.ClienteRepository;
+import br.com.irdbr.springbootionic.repositories.EnderecoRepository;
 import br.com.irdbr.springbootionic.repositories.EstadoRepository;
 import br.com.irdbr.springbootionic.repositories.ProdutoRepository;
 
@@ -31,6 +36,12 @@ public class TestConfig implements CommandLineRunner {
 	
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 	
 	
 	@Override
@@ -66,6 +77,20 @@ public class TestConfig implements CommandLineRunner {
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
 		cidadeRepository.saveAll(Arrays.asList(cid1, cid2, cid3));
 
+		Cliente cli1 = new Cliente(null, "Maria da Silva", "maria@hotmail.com", "38890493825", TipoCliente.PESSOAFISICA);
+		
+		cli1.getTelefones().addAll(Arrays.asList("1198776489", "1189478933"));
+		
+		Endereco end1 = new Endereco(null, "Rua Espinhos", "199", "Apto 2 Bl-2", "Rebouças", "09976890", cli1, cid1);
+		Endereco end2 = new Endereco(null, "Estrada Guarapiranga", "3499", "Andar 1", "Vila Andrade", "09976777", cli1, cid2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
+		enderecoRepository.saveAll(Arrays.asList(end1, end2));
+		
+		
+		
 	}
 
 }
