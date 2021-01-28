@@ -1,5 +1,6 @@
 package br.com.irdbr.springbootionic.config;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import br.com.irdbr.springbootionic.domain.Cidade;
 import br.com.irdbr.springbootionic.domain.Cliente;
 import br.com.irdbr.springbootionic.domain.Endereco;
 import br.com.irdbr.springbootionic.domain.Estado;
+import br.com.irdbr.springbootionic.domain.Pagamento;
+import br.com.irdbr.springbootionic.domain.PagamentoComBoleto;
+import br.com.irdbr.springbootionic.domain.PagamentoComCartao;
+import br.com.irdbr.springbootionic.domain.Pedido;
 import br.com.irdbr.springbootionic.domain.Produto;
+import br.com.irdbr.springbootionic.domain.enums.EstadoPagamento;
 import br.com.irdbr.springbootionic.domain.enums.TipoCliente;
 import br.com.irdbr.springbootionic.repositories.CategoriaRepository;
 import br.com.irdbr.springbootionic.repositories.CidadeRepository;
 import br.com.irdbr.springbootionic.repositories.ClienteRepository;
 import br.com.irdbr.springbootionic.repositories.EnderecoRepository;
 import br.com.irdbr.springbootionic.repositories.EstadoRepository;
+import br.com.irdbr.springbootionic.repositories.PagamentoRepository;
+import br.com.irdbr.springbootionic.repositories.PedidoRepository;
 import br.com.irdbr.springbootionic.repositories.ProdutoRepository;
 
 @Configuration
@@ -43,6 +51,11 @@ public class TestConfig implements CommandLineRunner {
 	@Autowired
 	private EnderecoRepository enderecoRepository;
 	
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -90,6 +103,21 @@ public class TestConfig implements CommandLineRunner {
 		enderecoRepository.saveAll(Arrays.asList(end1, end2));
 		
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("10/01/2021 19:30"), cli1, end1);
+		Pedido ped2 = new Pedido(null, sdf.parse("18/01/2021 21:31"), cli1, end2);
+		
+		Pagamento pag1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pag1);
+		
+		Pagamento pag2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("19/01/2021 00:00"), null);
+		ped2.setPagamento(pag2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pag1, pag2));
 		
 	}
 
