@@ -18,7 +18,7 @@ public class ProdutoResource {
 	private ProdutoService service;
 	
 	@RequestMapping(value = "/{id}" , method = RequestMethod.GET)
-	public ResponseEntity<?> findById(@PathVariable Long id) {
+	public ResponseEntity<Produto> findById(@PathVariable Long id) {
 		
 		Produto obj = service.buscar(id);
 		
