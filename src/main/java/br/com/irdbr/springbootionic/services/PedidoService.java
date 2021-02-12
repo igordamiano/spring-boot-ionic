@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.irdbr.springbootionic.domain.ItemPedido;
 import br.com.irdbr.springbootionic.domain.PagamentoComBoleto;
 import br.com.irdbr.springbootionic.domain.Pedido;
-import br.com.irdbr.springbootionic.domain.Produto;
 import br.com.irdbr.springbootionic.domain.enums.EstadoPagamento;
 import br.com.irdbr.springbootionic.repositories.ItemPedidoRepository;
 import br.com.irdbr.springbootionic.repositories.PagamentoRepository;
@@ -35,6 +35,12 @@ public class PedidoService {
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
+	@Autowired
+	private ProdutoService produtoService;
+	
 	public Pedido buscar(Long id) {
 		Optional<Pedido> obj = repo.findById(id);
 		
@@ -48,6 +54,8 @@ public class PedidoService {
 		obj.setId(null);
 		obj.setInstante(new Date());
 		
+		obj.setCliente(clienteService.find(obj.getCliente().getId()));
+		
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		if (obj.getPagamento() instanceof PagamentoComBoleto) {
@@ -60,12 +68,14 @@ public class PedidoService {
 		
 		for(ItemPedido ip: obj.getItens()) {
 			ip.setDesconto(0.0);
-			Optional<Produto> prd = produtoRepository.findById(ip.getProduto().getId());
-			ip.setProduto(prd.orElse(null));
+			//Optional<Produto> prd = produtoRepository.findById(ip.getProduto().getId());
+			//ip.setProduto(prd.orElse(null));
+			ip.setProduto(produtoService.find(ip.getProduto().getId()));
 			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
+		System.out.println(obj);
 		return obj;
 	}
 	
