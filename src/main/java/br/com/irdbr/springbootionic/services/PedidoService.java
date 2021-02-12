@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.irdbr.springbootionic.domain.ItemPedido;
 import br.com.irdbr.springbootionic.domain.PagamentoComBoleto;
@@ -14,7 +13,6 @@ import br.com.irdbr.springbootionic.domain.enums.EstadoPagamento;
 import br.com.irdbr.springbootionic.repositories.ItemPedidoRepository;
 import br.com.irdbr.springbootionic.repositories.PagamentoRepository;
 import br.com.irdbr.springbootionic.repositories.PedidoRepository;
-import br.com.irdbr.springbootionic.repositories.ProdutoRepository;
 import br.com.irdbr.springbootionic.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -29,8 +27,8 @@ public class PedidoService {
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
 	
-	@Autowired
-	private ProdutoRepository produtoRepository;
+//	@Autowired
+//	private ProdutoRepository produtoRepository;
 	
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
@@ -40,6 +38,9 @@ public class PedidoService {
 	
 	@Autowired
 	private ProdutoService produtoService;
+	
+	@Autowired
+	private EmailService emailService;
 	
 	public Pedido buscar(Long id) {
 		Optional<Pedido> obj = repo.findById(id);
@@ -75,7 +76,7 @@ public class PedidoService {
 			ip.setPedido(obj);
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
-		System.out.println(obj);
+		emailService.sendOrderConfirmationEmail(obj);
 		return obj;
 	}
 	
