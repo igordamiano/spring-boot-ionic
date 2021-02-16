@@ -23,9 +23,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private Environment env;
 
-	private static final String[] PUBLIC_MATCHERS = { "/h2-console/**" };
+	private static final String[] PUBLIC_MATCHERS = { 
+			"/h2-console/**" 
+			};
 
-	private static final String[] PUBLIC_MATCHERS_GET = { "/produtos/**", "/categorias/**" };
+	private static final String[] PUBLIC_MATCHERS_GET = {
+			"/produtos/**",
+			"/categorias/**",
+			"/clientes/**"
+			};
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -38,8 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Utiliza configuração de cors e desabilitar proteção a CSRF em sistemas
 		// stateless
 		http.cors().and().csrf().disable();
-		http.authorizeRequests().antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll() // permitido somente os
-																								// métodos GET
+		http.authorizeRequests().antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll() // permitido somente os																								// métodos GET
 				.antMatchers(PUBLIC_MATCHERS).permitAll() // permitido para os que estão dentro do array
 				.anyRequest().authenticated(); // para os demais, somente autenticando
 

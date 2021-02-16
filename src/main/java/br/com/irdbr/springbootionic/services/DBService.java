@@ -20,6 +20,7 @@ import br.com.irdbr.springbootionic.domain.PagamentoComCartao;
 import br.com.irdbr.springbootionic.domain.Pedido;
 import br.com.irdbr.springbootionic.domain.Produto;
 import br.com.irdbr.springbootionic.domain.enums.EstadoPagamento;
+import br.com.irdbr.springbootionic.domain.enums.Perfil;
 import br.com.irdbr.springbootionic.domain.enums.TipoCliente;
 import br.com.irdbr.springbootionic.repositories.CategoriaRepository;
 import br.com.irdbr.springbootionic.repositories.CidadeRepository;
@@ -129,16 +130,23 @@ public class DBService {
 
 		Cliente cli1 = new Cliente(null, "Maria da Silva", "irdbr19@gmail.com", 
 				"38890493825", TipoCliente.PESSOAFISICA, pe.encode("123"));
-		
 		cli1.getTelefones().addAll(Arrays.asList("1198776489", "1189478933"));
+		
+		Cliente cli2 = new Cliente(null, "Ana Costa", "igordamiano@gmail.com", 
+				"28864029826", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		cli2.getTelefones().addAll(Arrays.asList("1195576489", "1122478933"));
+		cli2.addPerfil(Perfil.ADMIN);
+		
 		
 		Endereco end1 = new Endereco(null, "Rua Espinhos", "199", "Apto 2 Bl-2", "Rebouças", "09976890", cli1, cid1);
 		Endereco end2 = new Endereco(null, "Estrada Guarapiranga", "3499", "Andar 1", "Vila Andrade", "09976777", cli1, cid2);
+		Endereco end3 = new Endereco(null, "Avenida Floriano", "221", null, "Centro", "09976777", cli2, cid2);
 		
 		cli1.getEnderecos().addAll(Arrays.asList(end1, end2));
+		cli2.getEnderecos().addAll(Arrays.asList(end3));
 		
-		clienteRepository.saveAll(Arrays.asList(cli1));
-		enderecoRepository.saveAll(Arrays.asList(end1, end2));
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecoRepository.saveAll(Arrays.asList(end1, end2, end3));
 		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
