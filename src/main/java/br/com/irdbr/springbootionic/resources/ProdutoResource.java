@@ -49,5 +49,4 @@ public class ProdutoResource {
 		return ResponseEntity.ok().body(listDTO);
 	}
 
-
 }
