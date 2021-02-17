@@ -72,4 +72,9 @@ public class UserSpringSecurity implements UserDetails {
 		return true;
 	}
 
+	// Testa se o usuário tem um certo perfil
+	public boolean hasRole(Perfil perfil) {
+		return getAuthorities().contains(new SimpleGrantedAuthority(perfil.getDescricao()));
+	}
+
 }

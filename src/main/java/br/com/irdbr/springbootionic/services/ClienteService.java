@@ -16,12 +16,15 @@ import org.springframework.stereotype.Service;
 import br.com.irdbr.springbootionic.domain.Cidade;
 import br.com.irdbr.springbootionic.domain.Cliente;
 import br.com.irdbr.springbootionic.domain.Endereco;
+import br.com.irdbr.springbootionic.domain.enums.Perfil;
 import br.com.irdbr.springbootionic.domain.enums.TipoCliente;
 import br.com.irdbr.springbootionic.dto.ClienteDTO;
 import br.com.irdbr.springbootionic.dto.ClienteNewDTO;
 import br.com.irdbr.springbootionic.repositories.CidadeRepository;
 import br.com.irdbr.springbootionic.repositories.ClienteRepository;
 import br.com.irdbr.springbootionic.repositories.EnderecoRepository;
+import br.com.irdbr.springbootionic.security.UserSpringSecurity;
+import br.com.irdbr.springbootionic.services.exceptions.AuthorizationException;
 import br.com.irdbr.springbootionic.services.exceptions.DataIntegrityException;
 import br.com.irdbr.springbootionic.services.exceptions.ObjectNotFoundException;
 
@@ -41,6 +44,13 @@ public class ClienteService {
 	private BCryptPasswordEncoder pe;
 
 	public Cliente find(Long id) {
+		
+		UserSpringSecurity user = UserService.authenticated();
+		
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Não autorizado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
