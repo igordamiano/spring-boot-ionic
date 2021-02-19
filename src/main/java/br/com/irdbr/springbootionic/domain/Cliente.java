@@ -56,6 +56,8 @@ public class Cliente implements Serializable {
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
+	
+	private String imgUrl;
 
 	public Cliente() {
 		addPerfil(Perfil.CLIENTE); // por padrão, todos vão ter perfil de cliente
@@ -174,6 +176,14 @@ public class Cliente implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 
 }
