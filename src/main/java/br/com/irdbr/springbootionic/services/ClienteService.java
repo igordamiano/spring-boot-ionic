@@ -1,5 +1,6 @@
 package br.com.irdbr.springbootionic.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.irdbr.springbootionic.domain.Cidade;
 import br.com.irdbr.springbootionic.domain.Cliente;
@@ -42,6 +44,9 @@ public class ClienteService {
 	
 	@Autowired
 	private BCryptPasswordEncoder pe;
+	
+	@Autowired
+	private S3Service s3Service;
 
 	public Cliente find(Long id) {
 		
@@ -126,5 +131,9 @@ public class ClienteService {
 		
 		return obj;
 	}
-
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return s3Service.uploadFile(multipartFile);
+	}
+	
 }

@@ -19,7 +19,8 @@ public class SpringBootIonicApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		s3Service.uploadFile("C:\\temp\\fotos\\banana.jpg");
+		// Teste de envio de imagem
+		//s3Service.uploadFile("C:\\temp\\fotos\\banana.jpg");
 	}
 
 }
