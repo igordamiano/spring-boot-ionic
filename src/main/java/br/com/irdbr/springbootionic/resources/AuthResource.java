@@ -31,6 +31,15 @@ public class AuthResource {
 		UserSpringSecurity user = UserService.authenticated();
 		String token = jwtUtil.generateToken(user.getUsername());
 		response.addHeader("Authorization", "Bearer " + token);
+		
+	/*  Por causa do cabeçalho personalizado: response.addHeader("Authorization", "Bearer " + token); 
+	 	Expondo o header Authorization (problema de Cors)
+		Cors (Cross-origin resource sharing): quais recursos (ex: quais métodos HTTP? quais headers?) estarão
+		disponíveis para requisições advindas de origens diferentes? 
+	 */
+		response.addHeader("access-control-expose-headers", "Authorization");
+
+		
 		return ResponseEntity.noContent().build();
 	}
 	
