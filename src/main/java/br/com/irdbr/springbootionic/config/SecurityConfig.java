@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -30,28 +31,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private JWTUtil jwtUtil;
 
 	private static final String[] PUBLIC_MATCHERS = { 
 			"/h2-console/**" 
-	};
+			};
 
 	private static final String[] PUBLIC_MATCHERS_GET = {
 			"/produtos/**",
 			"/categorias/**",
-			"/estados/**"
-	};
-	
+			"/estados/**" 
+			};
+
 	private static final String[] PUBLIC_MATCHERS_POST = {
 			"/clientes",
-			"/auth/forgot/**"
-	};
-
+			"/auth/forgot/**" 
+			};
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -64,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Utiliza configuração de cors e desabilitar proteção a CSRF em sistemas
 		// stateless
 		http.cors().and().csrf().disable();
-		http.authorizeRequests()
-				.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll() // permitido somente os métodos GET
+		http.authorizeRequests().antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll() // permitido somente os
+																								// métodos GET
 				.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll() // permitido somente os métodos POST
 				.antMatchers(PUBLIC_MATCHERS).permitAll() // permitido para os que estão dentro do array
 				.anyRequest().authenticated(); // para os demais, somente autenticando
@@ -81,21 +81,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
 		configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
-		
+
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
-	
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
-	
-	
+
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**",
+				"/swagger-ui.html", "/webjars/**");
 	}
 
 }
